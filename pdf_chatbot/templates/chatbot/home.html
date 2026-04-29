@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}DocuMind AI — Dashboard{% endblock %}
+
+{% block extra_css %}
+{% include 'chatbot/_sidebar_css.html' %}
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+}
+.welcome-icon {
+    font-size: 4rem;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 0 30px rgba(108,99,255,0.4));
+}
+.welcome-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+}
+.welcome-title span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.welcome-sub {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 480px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+}
+.action-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+}
+.action-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.action-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent), 0 8px 30px rgba(108,99,255,0.15);
+    transform: translateY(-3px);
+}
+.card-icon { font-size: 1.8rem; }
+.card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+}
+.card-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+{% endblock %}
+
+{% block content %}
+<div class="app-layout">
+    {% include 'chatbot/_sidebar.html' %}
+    <div class="main-content">
+        <div class="welcome-icon">🧠</div>
+        <h1 class="welcome-title">Welcome, <span>{{ request.user.username }}</span></h1>
+        <p class="welcome-sub">
+            Start a new chat, upload a PDF, and ask anything. DocuMind reads your documents so you don't have to.
+        </p>
+        <div class="action-cards">
+            <a href="{% url 'chatbot:new_session' %}" class="action-card">
+                <div class="card-icon">💬</div>
+                <div class="card-title">New Chat</div>
+                <div class="card-desc">Start a fresh conversation and optionally upload a PDF.</div>
+            </a>
+            <div class="action-card" onclick="document.getElementById('quick-upload').click()">
+                <div class="card-icon">📤</div>
+                <div class="card-title">Upload a PDF</div>
+                <div class="card-desc">Drop a document and start asking questions instantly.</div>
+            </div>
+            {% if documents %}
+            <div class="action-card" onclick="document.querySelector('.sidebar-docs-section').scrollIntoView()">
+                <div class="card-icon">📚</div>
+                <div class="card-title">My Documents</div>
+                <div class="card-desc">{{ documents.count }} document{{ documents.count|pluralize }} saved. Reuse them in any chat.</div>
+            </div>
+            {% endif %}
+        </div>
+        <form id="quick-upload-form" style="display:none">
+            <input type="file" id="quick-upload" accept=".pdf" onchange="handleQuickUpload(this)">
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% include 'chatbot/_sidebar_js.html' %}
+<script>
+async function handleQuickUpload(input) {
+    if (!input.files[0]) return;
+    // Create a new session then upload
+    const resp = await fetch("{% url 'chatbot:new_session' %}", { method: 'GET', redirect: 'follow' });
+    // Just redirect to new session page which will handle the upload
+    window.location.href = "{% url 'chatbot:new_session' %}";
+}
+</script>
+{% endblock %}

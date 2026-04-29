@@ -1,0 +1,51 @@
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <div class="logo-icon">📄</div>
+            Docu<span>Mind</span>
+        </div>
+        <a href="{% url 'chatbot:new_session' %}" class="new-chat-btn">
+            ✦ New Chat
+        </a>
+    </div>
+
+    <div class="sidebar-body">
+        {% if sessions %}
+        <div class="sidebar-section-title">Recent Chats</div>
+        {% for s in sessions %}
+        <div class="session-item {% if request.resolver_match.kwargs.session_id == s.id|stringformat:'i' %}active{% endif %}">
+            <span class="session-icon">{% if s.document %}📄{% else %}💬{% endif %}</span>
+            <a href="{% url 'chatbot:session' s.id %}" class="session-label" style="color:inherit;text-decoration:none;">
+                {{ s.title|truncatechars:30 }}
+            </a>
+            <form method="post" action="{% url 'chatbot:delete_session' s.id %}" style="margin:0">
+                {% csrf_token %}
+                <button type="submit" class="session-delete" title="Delete" onclick="return confirm('Delete this chat?')">✕</button>
+            </form>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% if documents %}
+        <div class="sidebar-section-title sidebar-docs-section">My Documents</div>
+        {% for doc in documents %}
+        <div class="doc-item">
+            <span>📑</span>
+            <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ doc.title }}">{{ doc.title|truncatechars:22 }}</span>
+            <span class="doc-badge">{{ doc.page_count }}p</span>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar">{{ request.user.get_initials }}</div>
+            <div class="user-details">
+                <div class="user-name">{{ request.user.username }}</div>
+                <div class="user-phone">{{ request.user.phone_number }}</div>
+            </div>
+            <a href="{% url 'accounts:logout' %}" class="logout-btn" title="Sign out">⏻</a>
+        </div>
+    </div>
+</aside>

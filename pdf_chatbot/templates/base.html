@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DocuMind AI{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:        #0a0a0f;
+            --surface:   #12121a;
+            --surface2:  #1a1a26;
+            --border:    #2a2a3d;
+            --accent:    #6c63ff;
+            --accent2:   #a78bfa;
+            --accent-glow: rgba(108,99,255,0.25);
+            --text:      #e8e8f0;
+            --text-muted:#8888aa;
+            --text-dim:  #55556a;
+            --user-bubble: #1e1e35;
+            --ai-bubble:   #141420;
+            --danger:    #ff4f6a;
+            --success:   #34d399;
+            --warn:      #fbbf24;
+            --radius:    14px;
+            --radius-sm: 8px;
+            --shadow:    0 4px 32px rgba(0,0,0,0.5);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: var(--accent2); text-decoration: none; }
+        a:hover { color: var(--accent); }
+        input, textarea, select {
+            font-family: inherit;
+            font-size: 0.95rem;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        input:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        input::placeholder, textarea::placeholder { color: var(--text-dim); }
+        button, .btn {
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 10px 20px;
+            transition: all 0.2s;
+            letter-spacing: 0.02em;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #7c74ff;
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1.5px solid var(--border);
+        }
+        .btn-ghost:hover {
+            border-color: var(--accent);
+            color: var(--accent2);
+        }
+        .btn-danger {
+            background: transparent;
+            color: var(--danger);
+            border: 1.5px solid transparent;
+        }
+        .btn-danger:hover {
+            background: rgba(255,79,106,0.1);
+            border-color: var(--danger);
+        }
+        .messages-django {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .msg-toast {
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            max-width: 320px;
+        }
+        .msg-toast.success { background: rgba(52,211,153,0.15); border: 1px solid var(--success); color: var(--success); }
+        .msg-toast.error   { background: rgba(255,79,106,0.15); border: 1px solid var(--danger);  color: var(--danger); }
+        .msg-toast.info    { background: rgba(108,99,255,0.15); border: 1px solid var(--accent);  color: var(--accent2); }
+        @keyframes slideIn {
+            from { transform: translateX(40px); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    {% if messages %}
+    <div class="messages-django">
+        {% for message in messages %}
+        <div class="msg-toast {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.msg-toast').forEach(el => el.remove());
+        }, 4000);
+    </script>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

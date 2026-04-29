@@ -1,0 +1,53 @@
+========================================
+   DocuMind PDF Chatbot - How To Run
+========================================
+
+FIRST TIME SETUP (do this only once)
+--------------------------------------
+1. Open PowerShell
+
+2. Go to project folder:
+   cd C:\Users\devne\Downloads\pdf_chatbot
+
+3. Install packages:
+   pip install -r requirements.txt
+
+4. Setup database:
+   python manage.py migrate
+
+5. Create your login account:
+   python manage.py createsuperuser
+   (enter username, phone number, password)
+
+
+EVERY DAY - HOW TO RUN
+--------------------------------------
+Step 1: Open PowerShell and run:
+   cd C:\Users\devne\Downloads\pdf_chatbot
+   python manage.py runserver
+
+Step 2: Open your browser and go to:
+   http://127.0.0.1:8000
+
+Step 3: Login with your username and password
+
+Step 4: Click "New Chat", upload a PDF, and ask questions!
+
+To STOP the server: press CTRL+C in PowerShell
+
+
+IMPORTANT NOTES
+--------------------------------------
+- Ollama runs automatically in background (no need to start it)
+- First AI response takes 2-3 minutes, be patient
+- Close YouTube and other apps for faster responses
+- If you get "timed out" error, just ask again
+
+
+MODEL BEING USED
+--------------------------------------
+- Model: phi3 (2.2 GB, already downloaded)
+- Settings file: pdf_chatbot\settings.py
+- OLLAMA_MODEL = 'phi3'
+
+========================================
